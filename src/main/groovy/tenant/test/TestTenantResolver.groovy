@@ -1,11 +1,13 @@
 package tenant.test
 
+import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.multitenancy.exceptions.TenantNotFoundException
 import org.grails.datastore.mapping.multitenancy.resolvers.SystemPropertyTenantResolver
 
 /**
  * Like SystemPropertyTenantResolver but returns a Long tenant identifier.
  */
+@CompileStatic
 class TestTenantResolver extends SystemPropertyTenantResolver {
 
     static void setTenant(Long id) {
@@ -14,6 +16,6 @@ class TestTenantResolver extends SystemPropertyTenantResolver {
 
     @Override
     Serializable resolveTenantIdentifier() throws TenantNotFoundException {
-        Long.valueOf(super.resolveTenantIdentifier() ?: 0)
+        Long.valueOf(super.resolveTenantIdentifier().toString())
     }
 }
