@@ -5,6 +5,6 @@ import grails.gorm.MultiTenant
 /**
  * Base trait for multi-tenant entities.
  */
-trait MyTenantEntity<T> extends MultiTenant<T> {
-    String tenantId = 'none'
+abstract class MyTenantEntity<T> implements MultiTenant<T> {
+    String tenantId
 }
