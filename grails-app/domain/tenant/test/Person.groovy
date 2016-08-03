@@ -1,9 +1,9 @@
 package tenant.test
-
 /**
  * Multi-tenant entity.
  */
-class Person extends MyTenantEntity<Person> {
+@TenantEntity
+class Person {
 
     String firstName
     String lastName

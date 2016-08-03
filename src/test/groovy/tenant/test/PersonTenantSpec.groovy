@@ -27,7 +27,7 @@ class PersonTenantSpec extends Specification {
         System.setProperty(SystemPropertyTenantResolver.PROPERTY_NAME, "")
         Map config = [
                 "grails.gorm.multiTenancy.mode"               : "DISCRIMINATOR",
-                "grails.gorm.multiTenancy.tenantResolverClass": SystemPropertyTenantResolver,
+                "grails.gorm.multiTenancy.tenantResolverClass": TestTenantResolver,
                 'dataSource.url'                              : "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000",
                 'dataSource.dbCreate'                         : 'update',
                 'dataSource.dialect'                          : H2Dialect.name,
@@ -43,7 +43,7 @@ class PersonTenantSpec extends Specification {
     Session session
 
     void setup() {
-        System.setProperty(SystemPropertyTenantResolver.PROPERTY_NAME, "")
+        TestTenantResolver.setTenant(null)
         def sessionFactory = datastore.sessionFactory
         session = sessionFactory.openSession()
         TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session))
@@ -58,21 +58,21 @@ class PersonTenantSpec extends Specification {
     void "save person"() {
         when:
         session.clear()
-        System.setProperty(SystemPropertyTenantResolver.PROPERTY_NAME, "one")
+        TestTenantResolver.setTenant(1L)
 
         then:
         new Person(firstName: "Fred", lastName: "Flintstone").save(flush: true)
 
         when:
         session.clear()
-        System.setProperty(SystemPropertyTenantResolver.PROPERTY_NAME, "two")
+        TestTenantResolver.setTenant(2L)
 
         then:
         new Person(firstName: "Wilma", lastName: "Flintstone").save(flush: true)
 
         and:
-        withId("one") { Person.list().size() } == 1
-        withId("two") { Person.list().size() } == 1
+        withId(1L) { Person.list().size() } == 1
+        withId(2L) { Person.list().size() } == 1
         withoutId { Person.list().size() } == 2
 
     }

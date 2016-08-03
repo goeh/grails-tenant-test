@@ -55,6 +55,18 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
 
+sourceSets {
+    main {
+        groovy {
+            // make sure Java sources get compiled first
+            srcDirs = ['src/main/java'] + srcDirs
+        }
+        java {
+            srcDirs = [] // don't compile Java code twice
+        }
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
